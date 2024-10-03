@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+# Requires user to specify the game level to log into
+if [ $# -eq 0 ]; then
+	echo "Please provide a game level"
+	exit 1
+fi
+
+level=$1
+
+# Assumes a file named pass_bandit.txt exists & xclip is installed to copy the password to the clipboard
+echo "Storing password..."
+	xclip -sel clip pass_bandit.txt
+
+echo "Logging in..."
+ssh bandit$level@bandit.labs.overthewire.org -p 2220
+
+# Option to store the new password after completing a new level
+read -r -p "Would you like to store the new password? [y/n]: " response
+
+# Paste new password into the corresponding file
+if  [[ $response ==  "y" ]]; then
+	read -p "Enter the new password: " pass
+	echo $pass > pass_bandit.txt
+	echo "Password stored..."
+fi
